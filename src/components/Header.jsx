@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, logout } from '../utils/auth';
 import { fetchUserProfile } from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiHome, FiPlusCircle, FiUser, FiLogIn, FiUserPlus,FiAlertCircle  } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiPlusCircle, FiUser, FiLogIn, FiUserPlus, FiAlertCircle } from 'react-icons/fi';
 
 const Header = () => {
   const [auth, setAuth] = useState(isAuthenticated());
@@ -98,8 +98,8 @@ const Header = () => {
     <Link
       to={to}
       className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors duration-300
-        ${location.pathname === to 
-          ? 'bg-gray-900 text-white' 
+        ${location.pathname === to
+          ? 'bg-gray-900 text-white'
           : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
       onClick={() => setIsMenuOpen(false)}
     >
@@ -107,7 +107,7 @@ const Header = () => {
       <span>{children}</span>
     </Link>
   );
-// console.log('Name',user.name);
+  // console.log('Name',user.name);
   const UserAvatar = ({ user }) => {
     if (!user) {
       return (
@@ -119,9 +119,9 @@ const Header = () => {
 
     if (user.user.avtar) {
       return (
-        <img 
-          src={user.user.name} 
-          alt={user.user.name} 
+        <img
+          src={user.user.name}
+          alt={user.user.name}
           className="w-8 h-8 rounded-full object-cover"
         />
       );
@@ -156,7 +156,7 @@ const Header = () => {
               {auth && user ? (
                 <div className="relative ml-3">
                   <div>
-                    <button 
+                    <button
                       className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                       onMouseEnter={() => setIsUserMenuOpen(true)}
                       onMouseLeave={() => setIsUserMenuOpen(false)}
@@ -166,14 +166,14 @@ const Header = () => {
                     </button>
                   </div>
                   {isUserMenuOpen && (
-                    <div 
+                    <div
                       className="origin-top-right absolute right-0 mt-0 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                       onMouseEnter={() => setIsUserMenuOpen(true)}
                       onMouseLeave={() => setIsUserMenuOpen(false)}
                     >
                       <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</Link>
                       <button onClick={handleLogoutClick} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</button>
-                      </div>
+                    </div>
                   )}
                 </div>
               ) : (
@@ -208,20 +208,20 @@ const Header = () => {
               <NavLink to="/" icon={FiHome}>Home</NavLink>
               {auth && <NavLink to="/new-post" icon={FiPlusCircle}>New Post</NavLink>}
               {auth && user ? (
-  <>
-    <NavLink to="/profile" icon={FiUser}>Your Profile</NavLink>
-    <button
-      onClick={handleLogoutClick}
-      className="w-full flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-    >
-      <FiLogIn className="w-5 h-5" />
-      <span>Sign out</span>
-    </button>
-  </>
-) : (  <>
-                  <NavLink to="/login" icon={FiLogIn}>Login</NavLink>
-                  <NavLink to="/signup" icon={FiUserPlus}>Sign up</NavLink>
+                <>
+                  <NavLink to="/profile" icon={FiUser}>Your Profile</NavLink>
+                  <button
+                    onClick={handleLogoutClick}
+                    className="w-full flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  >
+                    <FiLogIn className="w-5 h-5" />
+                    <span>Sign out</span>
+                  </button>
                 </>
+              ) : (<>
+                <NavLink to="/login" icon={FiLogIn}>Login</NavLink>
+                <NavLink to="/signup" icon={FiUserPlus}>Sign up</NavLink>
+              </>
               )}
             </div>
           </motion.div>
