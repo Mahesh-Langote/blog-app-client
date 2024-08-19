@@ -17,13 +17,30 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await loginUser(formData.email, formData.password);
+  //     if (response && response.token) {
+  //       localStorage.setItem('token', response.token);
+  //       toast.success('Login successful!');
+  //       navigate('/');
+  //     } else {
+  //       throw new Error('No token received');
+  //     }
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //     toast.error(error.message || 'Login failed. Please check your credentials.');
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await loginUser(formData.email, formData.password);
       if (response && response.token) {
-        localStorage.setItem('token', response.token);
         toast.success('Login successful!');
+        window.dispatchEvent(new Event('storage')); // Trigger storage event
         navigate('/');
       } else {
         throw new Error('No token received');
@@ -33,7 +50,6 @@ const Login = () => {
       toast.error(error.message || 'Login failed. Please check your credentials.');
     }
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

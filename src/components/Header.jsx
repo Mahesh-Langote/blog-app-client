@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, logout } from '../utils/auth';
+import { fetchUserProfile } from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiHome, FiPlusCircle, FiUser, FiLogIn, FiUserPlus } from 'react-icons/fi';
 
@@ -13,13 +14,20 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const isAuth = isAuthenticated();
       setAuth(isAuth);
       if (isAuth) {
-        const userData = JSON.parse(localStorage.getItem('user'));
-        console.log(userData)
-        setUser(userData);
+        try {
+          const userData = await fetchUserProfile();
+          console.log('Fetched user data:', userData);  // Add this line
+          setUser(userData);
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+          if (error.response && error.response.status === 401) {
+            handleLogout();
+          }
+        }
       } else {
         setUser(null);
       }
@@ -52,20 +60,35 @@ const Header = () => {
       <span>{children}</span>
     </Link>
   );
-// console.log(userData);
-  const UserAvatar = ({ userData }) => {
-    const initials = 'userData'
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+// console.log('Name',user.name);
+  const UserAvatar = ({ user }) => {
+    if (!user) {
+      return (
+        <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-semibold">
+          ?
+        </div>
+      );
+    }
 
-    return (
-      <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-semibold">
-        {initials}
-      </div>
-    );
+    if (user.user.avtar) {
+      return (
+        <img 
+          src={user.user.name} 
+          alt={user.user.name} 
+          className="w-8 h-8 rounded-full object-cover"
+        />
+      );
+    } else {
+      const initials = user.user.name
+        ? user.user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+        : 'U';
+
+      return (
+        <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-semibold">
+          {initials}
+        </div>
+      );
+    }
   };
 
   return (
@@ -83,7 +106,7 @@ const Header = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              {auth ? (
+              {auth && user ? (
                 <div className="relative ml-3">
                   <div>
                     <button 
@@ -91,8 +114,8 @@ const Header = () => {
                       onMouseEnter={() => setIsUserMenuOpen(true)}
                       onMouseLeave={() => setIsUserMenuOpen(false)}
                     >
-                      <UserAvatar name={user?.name} />
-                      <span className="ml-3 text-white">{user?.name}</span>
+                      <UserAvatar user={user} />
+                      <span className="ml-3 text-white">{user.name}</span>
                     </button>
                   </div>
                   {isUserMenuOpen && (
@@ -137,7 +160,7 @@ const Header = () => {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <NavLink to="/" icon={FiHome}>Home</NavLink>
               {auth && <NavLink to="/new-post" icon={FiPlusCircle}>New Post</NavLink>}
-              {auth ? (
+              {auth && user ? (
                 <>
                   <NavLink to="/profile" icon={FiUser}>Your Profile</NavLink>
                   <button
