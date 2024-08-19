@@ -9,11 +9,11 @@ const CommentForm = ({ postId, onCommentAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim()) return;
-
+  
     setIsSubmitting(true);
     try {
       const response = await API.post(`${ENDPOINTS.POSTS}/${postId}/comments`, { content });
-      onCommentAdded(response.data);
+      onCommentAdded(response.data);  // This now receives only the new comment
       setContent('');
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -21,7 +21,6 @@ const CommentForm = ({ postId, onCommentAdded }) => {
       setIsSubmitting(false);
     }
   };
-
   return (
     <form onSubmit={handleSubmit} className="mt-6">
       <textarea

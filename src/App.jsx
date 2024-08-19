@@ -17,7 +17,7 @@ import EditPost from './components/EditPost';
 const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
   if (!isAuthenticated) {
-    toast.error('You must be logged in to access this page.');
+    toast.error('Please Login');
     return <Navigate to="/login" />;
   }
   return children;
@@ -32,36 +32,36 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route 
-          path="/posts/:id" 
+        <Route
+          path="/posts/:id"
           element={
-             
-              <PostDetail />
-            
-          } 
+
+            <PostDetail />
+
+          }
         />
-        <Route 
-          path="/new-post" 
+        <Route
+          path="/new-post"
           element={
             <PrivateRoute>
               <NewPost />
             </PrivateRoute>
-          } 
+          }
         />
-         <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <PrivateRoute>
               <UserProfile />
-              
+
 
             </PrivateRoute>
-          } 
+          }
         />
         <Route path="/posts/:id/edit" element={<EditPost />} />
         <Route path="/users/:id" element={<OtherUserProfile />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </Router>
   );
 }

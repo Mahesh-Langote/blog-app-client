@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { FiSend } from 'react-icons/fi';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import './QuillEditor.css';
 
 const NewPost = () => {
   const [title, setTitle] = useState('');
@@ -12,7 +13,12 @@ const NewPost = () => {
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+  const [isTitleTooLong, setIsTitleTooLong] = useState(false);
+
   const navigate = useNavigate();
+  const MAX_TITLE_LENGTH = 70;
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,12 +30,27 @@ const NewPost = () => {
         toast.error('Failed to load categories');
       }
     };
-  
+
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    const text = content.replace(/<[^>]*>/g, '');
+    const words = text.split(/\s+/).filter(word => word.length > 0);
+    setWordCount(words.length);
+    setCharCount(text.length);
+  }, [content]);
+
+  useEffect(() => {
+    setIsTitleTooLong(title.length > MAX_TITLE_LENGTH);
+  }, [title]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isTitleTooLong) {
+      toast.error('Title is too long. Please shorten it to 70 characters or less.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await createPost({ title, content, category });
@@ -47,14 +68,14 @@ const NewPost = () => {
     toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
       [{ 'direction': 'rtl' }],
       [{ 'color': [] }, { 'background': [] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-      ['link', 'image', 'video'],
+      ['link'],
       ['clean']
     ],
   };
@@ -72,20 +93,29 @@ const NewPost = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className={`w-full px-3 py-2 bg-gray-700 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${isTitleTooLong ? 'border-red-500' : 'border-gray-600'
+                }`}
               placeholder="Enter post title"
+              maxLength={MAX_TITLE_LENGTH}
             />
+            <div className={`mt-1 text-sm ${isTitleTooLong ? 'text-red-500' : 'text-gray-400'}`}>
+              {title.length}/{MAX_TITLE_LENGTH}
+            </div>
           </div>
-          <div>
-            <label htmlFor="content" className="block text-sm font-medium mb-1">Content</label>
-            <ReactQuill
-              theme="snow"
-              value={content}
-              onChange={setContent}
-              modules={modules}
-              className="bg-gray-700 text-white rounded-md"
-              style={{ height: '300px', marginBottom: '50px' }}
-            />
+          <div className="mb-8">
+            <label htmlFor="content" className="block text-sm font-medium mb-2">Content</label>
+            <div className="bg-gray-700 rounded-lg overflow-hidden">
+              <ReactQuill
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={modules}
+                className="bg-gray-700 text-white quill-editor"
+              />
+            </div>
+            <div className="mt-2 text-sm text-gray-400 text-right">
+              Words: {wordCount} | Characters: {charCount}
+            </div>
           </div>
           <div>
             <label htmlFor="category" className="block text-sm font-medium mb-1">Category</label>
@@ -102,10 +132,10 @@ const NewPost = () => {
               ))}
             </select>
           </div>
-          <div>
-            <button 
-              type="submit" 
-              className="w-full flex justify-center items-center bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out disabled:opacity-50"
+          <div className="mt-8">
+            <button
+              type="submit"
+              className="w-full flex justify-center items-center bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out disabled:opacity-50 text-lg font-semibold"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

@@ -55,7 +55,6 @@ const PostDetail = () => {
     });
     toast.success('Comment added successfully!');
   };
-
   const createMarkup = (html) => {
     return {
       __html: DOMPurify.sanitize(html)

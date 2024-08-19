@@ -3,13 +3,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, logout } from '../utils/auth';
 import { fetchUserProfile } from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiHome, FiPlusCircle, FiUser, FiLogIn, FiUserPlus } from 'react-icons/fi';
+import { FiMenu, FiX, FiHome, FiPlusCircle, FiUser, FiLogIn, FiUserPlus,FiAlertCircle  } from 'react-icons/fi';
 
 const Header = () => {
   const [auth, setAuth] = useState(isAuthenticated());
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +21,7 @@ const Header = () => {
       if (isAuth) {
         try {
           const userData = await fetchUserProfile();
-          console.log('Fetched user data:', userData);  // Add this line
+          // console.log('Fetched user data:', userData);  
           setUser(userData);
         } catch (error) {
           console.error('Error fetching user profile:', error);
@@ -37,16 +38,62 @@ const Header = () => {
     return () => window.removeEventListener('storage', checkAuth);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setShowLogoutConfirmation(true);
+    setIsUserMenuOpen(false);
+  };
+  const handleLogoutConfirm = () => {
+    setShowLogoutConfirmation(false);
     logout();
     setAuth(false);
     setUser(null);
-    setIsUserMenuOpen(false);
     navigate('/login');
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
+  const LogoutConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+            onClick={onClose}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg p-6 max-w-sm mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <FiAlertCircle className="mx-auto text-yellow-400 w-12 h-12 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Confirm Logout</h3>
+                <p className="text-sm text-gray-500 mb-4">Are you sure you want to log out?</p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={onClose}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={onConfirm}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
   const NavLink = ({ to, icon: Icon, children }) => (
     <Link
       to={to}
@@ -96,7 +143,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-white font-bold text-xl">Blog App</Link>
+            <Link to="/" className="text-white font-bold text-xl">StoryForge</Link>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">
                 <NavLink to="/" icon={FiHome}>Home</NavLink>
@@ -125,8 +172,8 @@ const Header = () => {
                       onMouseLeave={() => setIsUserMenuOpen(false)}
                     >
                       <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</Link>
-                      <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</button>
-                    </div>
+                      <button onClick={handleLogoutClick} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</button>
+                      </div>
                   )}
                 </div>
               ) : (
@@ -161,18 +208,17 @@ const Header = () => {
               <NavLink to="/" icon={FiHome}>Home</NavLink>
               {auth && <NavLink to="/new-post" icon={FiPlusCircle}>New Post</NavLink>}
               {auth && user ? (
-                <>
-                  <NavLink to="/profile" icon={FiUser}>Your Profile</NavLink>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    <FiLogIn className="w-5 h-5" />
-                    <span>Sign out</span>
-                  </button>
-                </>
-              ) : (
-                <>
+  <>
+    <NavLink to="/profile" icon={FiUser}>Your Profile</NavLink>
+    <button
+      onClick={handleLogoutClick}
+      className="w-full flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+    >
+      <FiLogIn className="w-5 h-5" />
+      <span>Sign out</span>
+    </button>
+  </>
+) : (  <>
                   <NavLink to="/login" icon={FiLogIn}>Login</NavLink>
                   <NavLink to="/signup" icon={FiUserPlus}>Sign up</NavLink>
                 </>
@@ -181,6 +227,11 @@ const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <LogoutConfirmationModal
+        isOpen={showLogoutConfirmation}
+        onClose={() => setShowLogoutConfirmation(false)}
+        onConfirm={handleLogoutConfirm}
+      />
     </header>
   );
 };
