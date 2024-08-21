@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import dotenv from 'dotenv';
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://blog-app-server-beige.vercel.app';
 
 export const API = axios.create({ baseURL: BASE_URL });
 
