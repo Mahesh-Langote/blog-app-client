@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import UserProfile from './components/UserProfile';
 import OtherUserProfile from './components/OtherUserProfile';
 import EditPost from './components/EditPost';
+import NotFound from './pages/NotFound';
 
 // Custom PrivateRoute component
 const PrivateRoute = ({ children }) => {
@@ -60,6 +61,8 @@ function App() {
         />
         <Route path="/posts/:id/edit" element={<EditPost />} />
         <Route path="/users/:id" element={<OtherUserProfile />} />
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
       <Footer />
     </Router>
