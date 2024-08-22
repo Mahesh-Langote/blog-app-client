@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-// import { FiSearch, FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { FiSearch, FiFilter, FiChevronLeft, FiChevronRight, FiEdit } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiChevronLeft, FiChevronRight, FiEdit, FiAlertCircle } from 'react-icons/fi';
 import PostList from '../components/PostList';
 import { API, ENDPOINTS } from '../utils/api';
 import Header from '../components/Header';
 import { Link } from 'react-router-dom';
-
 import SortFilter from '../components/SortFilter';
 
 const Home = () => {
@@ -17,6 +15,7 @@ const Home = () => {
   const [filter, setFilter] = useState('');
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -24,6 +23,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     setIsLoading(true);
+    setNoResults(false);
     try {
       const response = await API.get(ENDPOINTS.POSTS, {
         params: {
@@ -36,8 +36,12 @@ const Home = () => {
       });
       setPosts(response.data.posts);
       setTotalPages(response.data.totalPages);
+      if (response.data.posts.length === 0) {
+        setNoResults(true);
+      }
     } catch (error) {
       console.error('Error fetching posts:', error);
+      setNoResults(true);
     }
     setIsLoading(false);
   };
@@ -63,8 +67,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
-      {/* <Header /> */}
-      <main className="bg-gray-900   mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="bg-gray-900 mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -94,6 +97,8 @@ const Home = () => {
         
         {isLoading ? (
           <LoadingSpinner />
+        ) : noResults ? (
+          <NoResultsMessage search={search} />
         ) : (
           <PostList
             posts={posts}
@@ -134,7 +139,6 @@ const SearchBar = ({ onSearch }) => {
         <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
         <motion.button
           type="submit"
-          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition duration-300 ease-in-out text-lg font-semibold"
         >
@@ -153,6 +157,24 @@ const LoadingSpinner = () => (
       className="w-16 h-16 border-t-4 border-indigo-500 border-solid rounded-full"
     />
   </div>
+);
+
+const NoResultsMessage = ({ search }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    className="text-center py-16"
+  >
+    <FiAlertCircle className="text-6xl text-indigo-500 mb-4 mx-auto" />
+    <h2 className="text-2xl font-semibold text-white mb-2">No results found</h2>
+    <p className="text-gray-400 mb-4">
+      {search ? `We couldn't find any posts matching "${search}".` : "There are no posts available at the moment."}
+    </p>
+    <p className="text-gray-400">
+      Try adjusting your search or filters, or check back later for new content.
+    </p>
+  </motion.div>
 );
 
 export default Home;
