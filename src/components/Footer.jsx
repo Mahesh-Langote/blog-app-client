@@ -42,7 +42,10 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-          <p>&copy; {currentYear} Blog App. All rights reserved.</p>
+          <p>&copy; {currentYear} StoryForge. All rights reserved.</p>
+        </div>
+        <div className="text-center">
+          <p> Developed By <a href="https://maheshlangote.online">@Mahesh</a></p>
         </div>
       </div>
     </footer>
