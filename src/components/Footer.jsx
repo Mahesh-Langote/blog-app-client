@@ -17,9 +17,8 @@ const Footer = () => {
             <h4 className="text-white font-medium mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li><Link to="/" className="hover:text-white transition-colors duration-300">Home</Link></li>
-              <li><Link to="/about" className="hover:text-white transition-colors duration-300">About</Link></li>
-              <li><Link to="/categories" className="hover:text-white transition-colors duration-300">Categories</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition-colors duration-300">Contact</Link></li>
+              <li><Link to="https://maheshlangote.online" target='#' className="hover:text-white transition-colors duration-300">About</Link></li>
+               <li><Link to="/contact" className="hover:text-white transition-colors duration-300">Contact</Link></li>
             </ul>
           </div>
           <div>
@@ -33,22 +32,13 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-medium mb-4">Connect With Us</h4>
             <div className="flex space-x-4">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
+              <a href="https://github.com/Mahesh-Langote" target="#" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
                 <FiGithub className="w-6 h-6" />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-                <FiTwitter className="w-6 h-6" />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
+               <a href="https://www.linkedin.com/in/mahesh-langote" target="#" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
                 <FiLinkedin className="w-6 h-6" />
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-                <FiFacebook className="w-6 h-6" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-                <FiInstagram className="w-6 h-6" />
-              </a>
-            </div>
+             </div>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">

@@ -64,7 +64,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       {/* <Header /> */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="bg-gray-900   mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ const SearchBar = ({ onSearch }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
     >
-      <div className="relative max-w-2xl mx-auto">
+      <div className="bg-gray-900 relative max-w-2xl mx-auto">
         <input
           type="text"
           value={query}
