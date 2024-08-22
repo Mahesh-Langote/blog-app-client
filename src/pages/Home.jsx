@@ -28,7 +28,7 @@ const Home = () => {
       const response = await API.get(ENDPOINTS.POSTS, {
         params: {
           page: currentPage,
-          limit: 10,
+          limit: 12,
           sort,
           category: filter,
           search,

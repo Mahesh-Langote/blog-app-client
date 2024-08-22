@@ -73,7 +73,7 @@ export const setAuthToken = (token, expiresIn) => {
     API.defaults.headers.common['x-auth-token'] = token;
     localStorage.setItem('token', token);
     // Set token expiration
-    const expirationTime = Date.now() + expiresIn * 1000; // expiresIn should be in seconds
+    const expirationTime = Date.now() + expiresIn * 100000; // expiresIn should be in seconds
     localStorage.setItem('tokenExpiration', expirationTime.toString());
   } else {
     delete API.defaults.headers.common['Authorization'];
